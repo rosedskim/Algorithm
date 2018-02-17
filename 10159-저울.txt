@@ -1,0 +1,75 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <algorithm>
+#include <climits>
+#include <vector>
+#include <string>
+#include <stack>
+#include <queue>
+#include <list>
+#include <functional>
+#include <cmath>
+#include <ctime>
+#include <deque>
+#include <time.h>
+#include <set>
+using namespace std;
+
+int arr[101][101];	//정방향
+int rev_arr[101][101];	//역방향
+
+int main()
+{
+	int N;
+	cin >> N;
+	int M;
+	cin >> M;
+	for (int i = 1; i <= M; i++)
+	{
+		int big, small;
+		scanf("%d%d", &big, &small);
+		arr[small][big] = 1;
+		rev_arr[big][small] = 1;
+	}
+	//중간 경로
+	for (int k = 1; k <= N; k++)
+	{
+		//시작 
+		for (int i = 1; i <= N; i++)
+		{
+			//목표
+			for (int j = 1; j <= N; j++)
+			{
+				//정방향 알수 있는거
+				if (arr[i][k] && arr[k][j])
+				{
+					arr[i][j] = 1;
+				}
+				//역방향으로 알수 있는거
+				if (rev_arr[i][k] && rev_arr[k][j])
+				{
+					rev_arr[i][j] = 1;
+				}
+			}
+		}
+	}
+	for (int i = 1; i <= N; i++)
+	{
+		int cnt = 0;
+		for (int j = 1; j <= N; j++)
+		{
+			//비교 결과 아는거 개수
+			if (arr[i][j] == 1)
+			{
+				cnt++;
+			}
+			if (rev_arr[i][j] == 1)
+			{
+				cnt++;
+			}
+		}
+		printf("%d\n", N-cnt-1);
+	}
+
+	return 0;
+}
