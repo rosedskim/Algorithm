@@ -1,0 +1,46 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <algorithm>
+#include <climits>
+#include <vector>
+#include <string>
+#include <stack>
+#include <queue>
+#include <list>
+#include <functional>
+#include <cmath>
+#include <ctime>
+#include <deque>
+#include <time.h>
+#include <set>
+using namespace std;
+
+int A, B;
+int DFS(int num, int mul)
+{
+	int cnt = 0;
+	if (mul >= 10)
+	{
+		return 0;
+	}
+	if (num > B)
+	{
+		return 0;
+	}
+	if (A <= num && num <= B)
+	{
+		cnt++;
+	}	
+	//뒤에 4추가하면서
+	cnt += DFS(num*10+4,mul+1);
+	//뒤에 7추가하면서
+	cnt += DFS(num*10+7, mul + 1);
+
+	return cnt;
+}
+int main()
+{
+	cin >> A >> B;
+	printf("%d\n",DFS(0,0));
+	return 0;
+}
