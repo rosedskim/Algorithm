@@ -1,0 +1,141 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <algorithm>
+#include <climits>
+#include <vector>
+#include <string>
+#include <stack>
+#include <queue>
+#include <list>
+#include <functional>
+#include <cmath>
+#include <ctime>
+#include <deque>
+#include <time.h>
+#include <set>
+using namespace std;
+
+int N, M;
+int value = 0;	//최대값
+int arr[501][501];
+bool visit[501][501];
+
+bool isRange(int x, int y)
+{
+	if (1 <= x && x <= N && 1 <= y && y <= M)
+	{
+		return true;
+	}
+	return false;
+}
+//ㅗㅓㅜㅏ제외 체크
+void check(int x, int y, int num, int count)
+{
+	if (count >= 4)
+	{
+		if (value < num)
+		{
+			value = num;
+		}
+		return;
+	}
+	visit[x][y] = true;
+	//오른쪽 탐색
+	if (isRange(x, y + 1))
+	{
+		if (visit[x][y + 1] != true)
+		{
+			check(x, y + 1, num + arr[x][y + 1], count + 1);
+		}
+	}
+	//아래쪽 탐색
+	if (isRange(x + 1, y))
+	{
+		if (visit[x + 1][y] != true)
+		{
+			check(x + 1, y, num + arr[x + 1][y], count + 1);
+		}
+	}
+	//왼쪽 탐색
+	if (isRange(x, y - 1))
+	{
+		if (visit[x][y - 1] != true)
+		{
+			check(x, y - 1, num + arr[x][y - 1], count + 1);
+		}
+	}
+	//위쪽 탐색
+	if (isRange(x - 1, y))
+	{
+		if (visit[x - 1][y] != true)
+		{
+			check(x - 1, y, num + arr[x - 1][y], count + 1);
+		}
+	}
+	visit[x][y] = false;
+}
+//ㅗㅓㅜㅏ 따로 체크
+void check2(int x, int y)
+{
+	//ㅗ
+	if (isRange(x - 1, y) && isRange(x, y - 1) && isRange(x, y + 1))
+	{
+		int num = arr[x][y] + arr[x - 1][y] + arr[x][y - 1] + arr[x][y + 1];
+		if (value < num)
+		{
+			value = num;
+		}
+	}
+	//ㅓ
+	if (isRange(x - 1, y) && isRange(x, y - 1) && isRange(x + 1, y))
+	{
+		int num = arr[x][y] + arr[x - 1][y] + arr[x][y - 1] + arr[x + 1][y];
+		if (value < num)
+		{
+			value = num;
+		}
+	}
+	//ㅜ
+	if (isRange(x, y - 1) && isRange(x + 1, y) && isRange(x, y + 1))
+	{
+		int num = arr[x][y] + arr[x][y - 1] + arr[x + 1][y] + arr[x][y + 1];
+		if (value < num)
+		{
+			value = num;
+		}
+	}
+	//ㅏ
+	if (isRange(x - 1, y) && isRange(x, y + 1) && isRange(x + 1, y))
+	{
+		int num = arr[x][y] + arr[x - 1][y] + arr[x][y + 1] + arr[x + 1][y];
+		if (value < num)
+		{
+			value = num;
+		}
+	}
+}
+
+int main()
+{
+	cin >> N >> M;
+	for (int i = 1; i <= N; i++)
+	{
+		for (int j = 1; j <= M; j++)
+		{
+			scanf("%d", &arr[i][j]);
+		}
+	}
+
+	for (int i = 1; i <= N; i++)
+	{
+		for (int j = 1; j <= M; j++)
+		{
+			check(i, j, arr[i][j], 1);
+			check2(i, j);
+		}
+	}
+
+	printf("%d\n", value);
+
+	return 0;
+}
