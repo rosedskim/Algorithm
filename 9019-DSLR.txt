@@ -1,0 +1,136 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <algorithm>
+#include <climits>
+#include <vector>
+#include <string>
+#include <stack>
+#include <queue>
+#include <list>
+#include <functional>
+#include <cmath>
+#include <ctime>
+#include <deque>
+#include <time.h>
+#include <set>
+using namespace std;
+
+struct item {
+	int num;//정보 담아있는거
+	int cnt;//명령어 횟수
+	string str;
+	item()
+	{
+		cnt = 0;
+		str = "";
+	}
+};
+bool check[10000];
+int min_val = 100000000;
+
+int main()
+{
+	int T;
+	cin >> T;
+	for (int i = 1; i <= T; i++)
+	{
+		item result;	//결과저장할 변수
+		min_val = 100000000;
+
+		int input, output;
+		scanf("%d%d", &input, &output);
+		item it;
+		it.num = input;
+		queue<item> q;
+		q.push(it);
+		check[it.num] = 1;
+		while (!q.empty())
+		{
+			item temp = q.front();
+			q.pop();
+			//!!!!! 이 예외처리 안해주면 시간초과 날수밖에 없다. 가지치기라 생각하면될듯
+			//탐색 진행중인 과정개수가 최소값 저장해둔값보다 같거나 크면 할필요가없다
+			if (temp.cnt >= min_val)
+			{
+				continue;
+			}
+			if (temp.num == output)
+			{
+				if (min_val > temp.cnt)
+				{
+					result.str = temp.str;
+					result.cnt = temp.cnt;
+					min_val = temp.cnt;
+				}
+			}
+			int first = temp.num;
+			int number = first;	//number 는 명령어로인해 바뀔값
+			//D
+			number *= 2;
+			if (number > 9999)
+			{
+				number %= 10000;
+			}
+			if (check[number] != 1)
+			{
+				item it2;
+				it2.num = number;
+				it2.cnt = temp.cnt + 1;
+				it2.str = temp.str + "D";
+				q.push(it2);
+				check[it2.num] = 1;
+			}
+			number = first;	//원래 수 복귀
+			//S
+			number -= 1;
+			if (number < 0)
+			{
+				number = 9999;
+			}
+			if (check[number] != 1)
+			{
+				item it3;
+				it3.num = number;
+				it3.cnt = temp.cnt + 1;
+				it3.str = temp.str + "S";	//그 전꺼에서 오던거 + 명령어
+				q.push(it3);
+				check[it3.num] = 1;
+			}
+			number = first;
+			//L		
+			item it4;
+			int num1 = temp.num / 1000;	//맨 앞자리수
+			int num2 = temp.num % 1000;	//앞자리수 제외한 나머지 수
+			number = num2 * 10 + num1;
+			if (check[number] != 1)
+			{
+				it4.num = number;
+				it4.cnt = temp.cnt + 1;
+				it4.str = temp.str + "L";
+				q.push(it4);
+				check[it4.num] = 1;
+			}
+			number = first;
+			//R	
+			item it5;
+			num1 = temp.num % 10;	//맨 뒤자리 수 
+			num2 = temp.num / 10;	//맨 뒤 수 제외한 나머지 수
+			number = num1 * 1000 + num2;
+			if (check[number] != 1)
+			{
+				it5.num = number;
+				it5.cnt = temp.cnt + 1;
+				it5.str = temp.str + "R";
+				q.push(it5);
+				check[it5.num] = 1;
+			}
+		}
+		cout << result.str << "\n";
+		//초기화
+		for (int j = 0; j < 10000; j++)
+		{
+			check[j] = 0;
+		}
+	}
+	return 0;
+}
