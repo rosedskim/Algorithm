@@ -1,0 +1,78 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <algorithm>
+#include <climits>
+#include <vector>
+#include <string>
+#include <stack>
+#include <queue>
+#include <list>
+#include <functional>
+#include <cmath>
+#include <ctime>
+#include <deque>
+#include <time.h>
+#include <set>
+using namespace std;
+
+struct item {
+	int end;
+	int value;
+};
+
+int V;
+vector<item> v[100001];
+long long total = 0;
+bool check[100001];
+int tree_index = 0;
+
+void DFS(int index,long long sum)
+{
+	//최대값 갱신
+	if (total < sum)
+	{
+		total = sum;
+		tree_index = index;
+	}
+	//방문한거 체크
+	check[index] = true;
+	for (int i = 0; i < v[index].size(); i++)
+	{
+		//방문 안했던것만
+		if (check[v[index][i].end] != true)
+		{
+			DFS(v[index][i].end, sum + v[index][i].value);
+		}
+	}
+	//복원
+	check[index] = false;
+}
+
+int	main()
+{
+	cin >> V;
+	for (int i = 1; i <= V; i++)
+	{
+		int start;
+		scanf("%d", &start);
+		while (1)
+		{
+			int end;
+			scanf("%d", &end);
+			if (end == -1)
+			{
+				break;
+			}
+			int value;
+			scanf("%d", &value);
+			item it;
+			it.end = end;
+			it.value = value;
+			v[start].push_back(it);
+		}
+	}
+	DFS(1, 0);
+	DFS(tree_index, 0);
+	printf("%lld", total);
+	return	0;
+}
