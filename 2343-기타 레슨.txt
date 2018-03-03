@@ -1,0 +1,73 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <algorithm>
+#include <climits>
+#include <vector>
+#include <string>
+#include <stack>
+#include <queue>
+#include <list>
+#include <functional>
+#include <cmath>
+#include <ctime>
+#include <deque>
+#include <time.h>
+#include <set>
+using namespace std;
+
+int arr[100001];
+
+int	main()
+{
+	int N, M;
+	cin >> N >> M;
+	int sum = 0;
+	int min = 0;	//각 하나당 최대 크기가 블루레이의 최소크기가 된다.
+	for (int i = 1; i <= N; i++)
+	{
+		scanf("%d", &arr[i]);
+		sum += arr[i];
+		if (min < arr[i])
+		{
+			min = arr[i];
+		}
+	}
+	int low = min;
+	int  high = sum;
+	int result = 10000000;
+	while (low <= high)
+	{
+		int mid = (low + high) / 2;
+		int cnt = 1;	//블루레이 개수
+		int start = 0;	//더해나가는값
+		for (int i = 1; i <= N; i++)
+		{
+			if (start+arr[i] <= mid)
+			{
+				start += arr[i];
+			}
+			else
+			{
+				cnt++;
+				start = arr[i];
+			}
+		}
+		//블루레이 개수보다 크거나 같을떄 
+		if (cnt > M)
+		{
+			low = mid + 1;
+		}
+		//블루레이 개수 모자라면 크기를 줄인다.
+		else
+		{
+			if (result > mid)
+			{
+				result = mid;
+			}
+			high = mid - 1;
+		}
+	}
+	printf("%d\n", result);
+
+	return	0;
+}
