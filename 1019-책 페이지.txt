@@ -1,0 +1,78 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <algorithm>
+#include <climits>
+#include <vector>
+#include <string>
+#include <cmath>
+#include <queue>
+#include <stack>
+using namespace std;
+
+int arr[10];	//0~9 개수
+
+void cal(int num,int mul)
+{
+	//이곳도 mul 해주는 이유는 십의자리 135->136 갈떄 1350~1360이기떄문에
+	while (num / 10)
+	{
+		arr[num % 10]+=mul;
+		num /= 10;
+	}
+	//마지막남은 자리 개수 플러스
+	arr[num]+=mul;
+}
+void printResult()
+{
+	for (int i = 0; i < 10; i++)
+	{
+		printf("%d ", arr[i]);
+	}
+}
+void make(int A, int B, int mul)
+{
+	for (int i = 0; i < 10; i++)
+	{
+		arr[i]+=((B/10 - A/10) + 1)*mul;
+	}
+}
+int main()
+{
+	int N;
+	cin >> N;
+	int A = 1;
+	int B = N;
+	int mul = 1;
+	while (1)
+	{
+		//끝자리가 0일떄까지 A증가시키면서 개수 세기
+		while (A % 10 != 0)
+		{
+			if (A == B)
+			{
+				cal(A,mul);
+				printResult();
+				return 0;
+			}
+			cal(A,mul);
+			A++;
+		}
+		//끝자리가 9일떄까지 B감소시키면서 개수 세기
+		while (B % 10 != 9)
+		{
+			if (B == A)
+			{
+				cal(B,mul);
+				printResult();
+				return 0;
+			}
+			cal(B,mul);
+			B--;
+		}
+		make(A,B,mul);
+		mul *= 10;
+		A /= 10;
+		B /= 10;
+	}
+	return 0;
+}
