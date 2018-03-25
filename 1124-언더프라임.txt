@@ -1,0 +1,57 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <queue>
+#include <string>
+#include <cmath>
+#include <limits.h>
+using namespace std;
+
+int prime[100001];
+int make_cnt(int number, int divide)
+{
+	int ret = 0;
+	while (number%divide==0)
+	{
+		number /= divide;
+		ret++;
+	}
+	return ret;
+}
+void init()
+{
+	for (int i = 2; i <= (100000); i++)
+	{
+		//체크 안된거
+		if (prime[i] == 0)
+		{
+			int cnt = 2;
+			while (i*cnt <= 100000)
+			{
+				int temp = make_cnt(i*cnt, i);
+				prime[i*cnt] += temp;
+				cnt++;
+			}
+		}
+	}
+}
+
+int main() 
+{
+	init();
+	int A, B;
+	cin >> A >> B;
+	int cnt = 0;
+	prime[0] = 1;	//하나로 이루어진 소수는 소수 개수가 0이 아니다.
+	for (int i = A; i <= B; i++)
+	{
+		//i번째의 소수개수가 소수개인지 // 소수인거는 0으로 체크되어있으므로
+		if (prime[prime[i]] == 0)
+		{
+			cnt++;
+		}
+	}
+	cout << cnt << "\n";
+	return 0;
+}
