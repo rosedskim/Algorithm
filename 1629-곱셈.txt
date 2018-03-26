@@ -1,0 +1,35 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <queue>
+#include <string>
+#include <cmath>
+#include <limits.h>
+using namespace std;
+
+long long int A, B, C;
+long long int DFS(long long int x, long long int y)
+{
+	if (y == 0)
+	{
+		return 1;
+	}
+	//È¦¼ö ÀÏ‹š´Â 1»©ÁÖ±â
+	if (y % 2 == 1)
+	{
+		return (x*DFS(x, y - 1))%C;
+	}
+	else// Â¦¼öÀÏ¶§´Â Á¦°ö¼ö¸¦ 2·Î ³ª´©°í
+	{
+		long long int temp = DFS(x, y / 2);
+		return temp*temp%C;
+	}
+}
+
+int main() 
+{
+	cin >> A >> B >> C;
+	cout << DFS(A, B) << "\n";
+	return 0;
+}
