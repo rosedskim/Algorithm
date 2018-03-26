@@ -1,0 +1,87 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <queue>
+#include <string>
+#include <cmath>
+#include <limits.h>
+using namespace std;
+
+int N;
+long long int arr[51];
+long long int CCW(long long int x1, long long int x2, long long int x3)
+{
+	long long int ret = (x2 - x1)*(arr[x3] - arr[x1]) - (arr[x2] - arr[x1])*(x3 - x1);
+	return ret;
+}
+bool left_possible(long long int start, long long int end)
+{
+	bool check = true;
+	for (long long int i = end - 1; i > start; i--)
+	{
+		if (CCW(end,i,start) >= 0)
+		{
+			check = false;
+			break;
+		}
+	}
+	return check;
+}
+bool right_possible(long long int start, long long int end)
+{
+	bool check = true;
+	for (long long int i = start + 1; i < end; i++)
+	{
+		if (CCW(start, i, end) <= 0)
+		{
+			check = false;
+			break;
+		}
+	}
+	return check;
+}
+int make(long long int index)
+{
+	int ret= 0;
+	for (long long int i = 1; i <= N; i++)
+	{
+		if (i != index)
+		{
+			if (i < index)
+			{
+				//¿ÞÂÊ
+				if (left_possible(i, index))
+				{
+					ret++;
+				}
+			}
+			else
+			{
+				//¿À¸¥ÂÊ
+				if (right_possible(index, i))
+				{
+					ret++;
+				}
+			}
+		}
+	}
+	return ret;
+}
+
+int main() 
+{
+	cin >> N;
+	for (int i = 1; i <= N; i++)
+	{
+		scanf("%d", &arr[i]);
+	}
+	int result = 0;
+	for (long long int i = 1; i <= N; i++)
+	{
+		int sum = make(i);
+		result = max(result, sum);
+	}
+	cout << result << "\n";
+	return 0;
+}
