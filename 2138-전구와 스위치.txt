@@ -1,0 +1,143 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <queue>
+#include <string>
+#include <cmath>
+#include <limits.h>
+using namespace std;
+
+int arr[100001];
+int result[100001];
+void change(int index)
+{
+	if (arr[index] == 1)
+	{
+		arr[index] = 0;
+	}
+	else
+	{
+		arr[index] = 1;
+	}
+}
+int main()
+{
+	int N;
+	cin >> N;
+	string str,goal;
+	cin >> str;
+	for (int i = 0; i < N; i++)
+	{
+		arr[i + 1] = str[i] - 48;
+	}
+	cin >> goal;
+	for (int i = 0; i < N; i++)
+	{
+		result[i + 1] = goal[i] - 48;
+	}
+	//1번 키는 것부터
+	int cnt1 = 0;
+	for (int i = 1; i <= N; i++)
+	{
+		//처음일떄는 i,i+1
+		if (i == 1)
+		{
+			change(i);
+			change(i + 1);
+			cnt1++;
+		}
+		else if (i == N)
+		{
+			if (arr[i - 1] != result[i - 1])
+			{
+				change(i);
+				change(i - 1);
+				cnt1++;
+			}
+		}
+		else
+		{
+			//바꾸줘야 할떄 ex) 2번전구를 켜서 1번전구를 바꾸어주어야할때
+			if (arr[i - 1] != result[i - 1])
+			{
+				change(i);
+				change(i - 1);
+				change(i + 1);
+				cnt1++;
+			}
+			//안바꾸어주어도 되면 아무것도 하지않는다.
+		}
+	}
+	bool ch = true;
+	//결과값이랑비교
+	for (int i = 1; i <= N; i++)
+	{
+		if (arr[i] != result[i])
+		{
+			ch = false;
+			break;
+		}
+	}
+	//arr다시 원래로 초기화
+	for (int i = 1; i <= N; i++)
+	{
+		arr[i] = str[i - 1]-48;
+	}
+	int cnt2 = 0;
+	//1스위치 누르지 않았을때
+	for (int i = 2; i <= N; i++)
+	{
+		if (i == N)
+		{
+			if (arr[i - 1] != result[i - 1])
+			{
+				change(i);
+				change(i - 1);
+				cnt2++;
+			}
+		}
+		else
+		{
+			if (arr[i - 1] != result[i - 1])
+			{
+				change(i);
+				change(i+1);
+				change(i-1);
+				cnt2++;
+			}
+		}
+	}
+	bool ch2 = true;
+	for (int i = 1; i <= N; i++)
+	{
+		if (arr[i] != result[i])
+		{
+			ch2 = false;
+			break;
+		}
+	}
+	//둘다 못 바꿀때
+	if (ch == false && ch2 == false)
+	{
+		cout << -1 << "\n";
+	}
+	//둘다 바꿀수 있을때
+	else if(ch==true && ch2==true)
+	{
+		cout << min(cnt1, cnt2) << "\n";
+	}
+	//둘중 하나는 바꿀수있을때
+	else
+	{
+		if (ch == true && ch2 == false)
+		{
+			cout << cnt1 << "\n";
+		}
+		else
+		{
+			cout << cnt2 << "\n";
+		}
+	}
+	return 0;
+}
