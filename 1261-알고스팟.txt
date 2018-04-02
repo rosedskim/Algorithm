@@ -1,0 +1,126 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <queue>
+#include <string>
+#include <cmath>
+#include <limits.h>
+using namespace std;
+
+struct item {
+	int x;
+	int y;
+	int count;
+	item()
+	{
+		count = 0;
+	}
+};
+int N, M;
+int arr[101][101];
+int wall_count[101][101];
+queue<item> q;
+void init()
+{
+	cin >> M >> N;
+	for (int i = 1; i <= N; i++)
+	{
+		string str;
+		cin >> str;
+		for (int j = 0; j < str.size(); j++)
+		{
+			arr[i][j + 1] = str[j] - 48;
+		}
+
+		for (int j = 1; j <= M; j++)
+		{
+			wall_count[i][j] = 10000;
+		}
+	}
+	//맨처음은 무조건 벽 개수 0
+	wall_count[1][1] = 0;
+}
+bool isRange(int x, int y)
+{
+	if (1 <= x && x <= N && 1 <= y && y <= M)
+	{
+		return true;
+	}
+	return false;
+}
+void check(int x, int y, int count)
+{
+	item temp;
+	//벽일때
+	if (arr[x][y] == 1)
+	{
+		if (wall_count[x][y] > count + 1)
+		{
+			temp.x = x;
+			temp.y = y;
+			temp.count = count + 1;
+			q.push(temp);
+			wall_count[x][y] = count + 1;
+		}
+	}
+	//빈방일때
+	else
+	{
+		if (wall_count[x][y] > count)
+		{
+			temp.x = x;
+			temp.y = y;
+			temp.count = count;
+			q.push(temp);
+			wall_count[x][y] = count;
+		}
+	}
+}
+int main()
+{
+	init();	//미로 입력받기
+	item it;
+	it.x = 1;
+	it.y = 1;
+	q.push(it);
+	while (!q.empty())
+	{
+		item temp = q.front();
+		q.pop();
+		//오른쪽
+		if (isRange(temp.x, temp.y + 1))
+		{
+			int newX = temp.x;
+			int newY = temp.y + 1;
+			int newCount = temp.count;
+			check(newX, newY, newCount);
+		}
+		//아래쪽
+		if (isRange(temp.x + 1, temp.y))
+		{
+			int newX = temp.x + 1;
+			int newY = temp.y;
+			int newCount = temp.count;
+			check(newX, newY, newCount);
+		}
+		//왼쪽
+		if (isRange(temp.x, temp.y - 1))
+		{
+			int newX = temp.x;
+			int newY = temp.y - 1;
+			int newCount = temp.count;
+			check(newX, newY, newCount);
+		}
+		//위쪽
+		if (isRange(temp.x - 1, temp.y))
+		{
+			int newX = temp.x - 1;
+			int newY = temp.y;
+			int newCount = temp.count;
+			check(newX, newY, newCount);
+		}
+	}
+	cout << wall_count[N][M] << "\n";
+	return 0;
+}
