@@ -1,0 +1,140 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <queue>
+#include <string>
+#include <cmath>
+#include <limits.h>
+#include <deque>
+using namespace std;
+
+
+struct item {
+	int location;
+	int id;
+};
+deque<item> dq;	//개미
+vector<item> dist;
+bool cmp(item it1, item it2)
+{
+	if (it1.location < it2.location)
+	{
+		return true;
+	}
+	return false;
+}
+
+int main()
+{
+	int T;
+	cin >> T;
+	for (int i = 1; i <= T; i++)
+	{
+		int N, L, K;
+		scanf("%d%d%d", &N, &L, &K);
+		for (int j = 1; j <= N; j++)
+		{
+			int location, id;
+			scanf("%d%d", &location, &id);
+			dq.push_back({ location,id });
+		}
+		//각 개미들이 처음이나 끝에서 얼마 떨어져있는지 거리
+		for (int j = 0; j < dq.size(); j++)
+		{
+			if (dq[j].id > 0)
+			{
+				dist.push_back({ L - dq[j].location,dq[j].id });
+			}
+			else
+			{
+				dist.push_back({ dq[j].location - 0,dq[j].id });
+			}
+		}
+		sort(dist.begin(), dist.end(), cmp);
+		int cnt = 0;
+		for (int j = 0; j < dist.size(); j++)
+		{
+			if (j == dist.size() - 1)
+			{
+				cout << dq.front().id << "\n";
+				break;
+			}
+			else
+			{
+				//길이가 같은게 두개일떄 아이디 작은거를 출력해줘야됨
+				if (dist[j].location == dist[j + 1].location)
+				{
+					if (dq.front().id > dq.back().id)
+					{
+						int temp = dq.back().id;
+						dq.pop_back();
+						cnt++;
+						if (cnt == K)
+						{
+							cout << temp << "\n";
+							break;
+						}
+						temp = dq.front().id;
+						dq.pop_front();
+						cnt++;
+						if (cnt == K)
+						{
+							cout << temp << "\n";
+							break;
+						}
+						j++;
+					}
+					else
+					{
+						int temp = dq.front().id;
+						dq.pop_front();
+						cnt++;
+						if (cnt == K)
+						{
+							cout << temp << "\n";
+							break;
+						}
+						temp = dq.back().id;
+						dq.pop_back();
+						cnt++;
+						if (cnt == K)
+						{
+							cout << temp << "\n";
+							break;
+						}
+						j++;
+					}
+				}
+				else
+				{
+					if (dist[j].id > 0)
+					{
+						int temp = dq.back().id;
+						dq.pop_back();
+						cnt++;
+						if (cnt == K)
+						{
+							cout << temp << "\n";
+							break;
+						}
+					}
+					else
+					{
+						int temp = dq.front().id;
+						dq.pop_front();
+						cnt++;
+						if (cnt == K)
+						{
+							cout << temp << "\n";
+							break;
+						}
+					}
+				}
+			}
+		}
+		dq.clear();
+		dist.clear();
+	}
+	return 0;
+}
