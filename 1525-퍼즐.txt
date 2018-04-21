@@ -1,0 +1,101 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <map>
+#include <queue>
+using namespace std;
+
+map<int, int> m;
+
+int main()
+{
+	string input = "";
+	for (int i = 1; i <= 3; i++)
+	{
+		for (int j = 1; j <= 3; j++)
+		{
+			char ch;
+			cin >> ch;
+			if (ch == '0')
+			{
+				input += '9';
+			}
+			else
+			{
+				input += ch;
+			}
+		}
+	}
+	int num = atoi(input.c_str());
+	m[num] = 0;
+	queue<int> q;
+	q.push(num);
+	while (!q.empty())
+	{
+		int state = q.front();
+		q.pop();
+		string temp = to_string(state);
+		//0인 자리 찾기
+		int index = temp.find('9');
+		//오른쪽 - 범위 벗어나지않고 다음줄에있는 수로 변하지 않을떄
+		if (index < 8 && (index + 1) / 3 == index / 3)
+		{
+			string now = temp;
+			swap(now[index], now[index + 1]);
+			int next = stoi(now);
+			//map에 없으면 추가
+			if (m.count(next) == 0)
+			{
+				m[next] = m[state] + 1;
+				q.push(next);
+			}
+		}
+		//아래쪽
+		if (index + 3 < 9)
+		{
+			string now = temp;
+			swap(now[index], now[index + 3]);
+			int next = stoi(now);
+			if (m.count(next) == 0)
+			{
+				m[next] = m[state] + 1;
+				q.push(next);
+			}
+		}
+		//왼쪽
+		if (index > 0 && (index - 1) / 3 == index / 3)
+		{
+			string now = temp;
+			swap(now[index], now[index - 1]);
+			int next = stoi(now);
+			if (m.count(next) == 0)
+			{
+				m[next] = m[state] + 1;
+				q.push(next);
+			}
+		}
+		//위쪽
+		if (index - 3 >= 0)
+		{
+			string now = temp;
+			swap(now[index], now[index - 3]);
+			int next = stoi(now);
+			if (m.count(next) == 0)
+			{
+				m[next] = m[state] + 1;
+				q.push(next);
+			}
+		}
+	}
+	//안되는경우
+	if (m.count(123456789) == 0)
+	{
+		cout << -1 << "\n";
+	}
+	else
+	{
+		cout << m[123456789] << "\n";
+	}
+	return 0;
+}
