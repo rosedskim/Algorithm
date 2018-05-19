@@ -1,0 +1,87 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <vector>
+#include <queue>
+using namespace std;
+#define INF 100000000
+int N, M;
+int arr[501][501];
+int dist[501];
+int main()
+{
+	cin >> N >> M;
+	//dist 초기화
+	for (int i = 1; i <= N; i++)
+	{
+		dist[i] = INF;
+	}
+	//시작점은 0초기화
+	dist[1] = 0;
+	//arr[i][j] 큰수로 초기화
+	for (int i = 1; i <= N; i++)
+	{
+		for (int j = 1; j <= N; j++)
+		{
+			arr[i][j] = INF;
+		}
+	}
+	for (int i = 1; i <= M; i++)
+	{
+		int from, to, value;
+		scanf("%d%d%d", &from, &to, &value);
+		if (arr[from][to] > value)
+		{
+			arr[from][to] = value;
+		}
+	}
+	//모든 정점에서 연결될수있는거 다해보기
+	//모든 정점 반복
+	bool check = true;
+	//1~K-1까지 반복해주어야 완전히 모든경우에 대해서 최단경로를 구한것이다.
+	//K 일때 dist 바꿔주는경우가 생기는것은 음의 사이클 생긴경우이다.
+	for (int k = 1; k <= N; k++)
+	{
+		//i,j는 모든 에지에 대한 연산을 1번수행한경우이다.
+		for (int i = 1; i <= N; i++)
+		{
+			//연결된거 최단거리 구하기
+			for (int j = 1; j <= N; j++)
+			{
+				//연결된경우
+				if (arr[i][j] != INF)
+				{
+					//현재 정점 i의 dist[i] 와 j를 거쳐서 가는경우 arr[i][j] 합친게 dist[j]보다 작은경우
+					if (dist[j] > dist[i] + arr[i][j])
+					{
+						dist[j] = dist[i] + arr[i][j];
+						if (k == N)
+						{
+							check = false;
+						}
+					}
+				}
+			}
+		}
+	}
+	if (check == false)
+	{
+		cout << -1 << "\n";
+	}
+	else
+	{
+		for (int i = 2; i <= N; i++)
+		{
+			if (dist[i] == INF)
+			{
+				printf("-1\n");
+			}
+			else
+			{
+				printf("%d\n", dist[i]);
+			}
+		}
+	}
+	return 0;
+}
