@@ -1,0 +1,46 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <vector>
+#include <queue>
+#include <stack>
+using namespace std;
+
+int K;
+int dp[501][501];
+int sum[501];
+int cost[501];
+
+int main()
+{
+	int T;
+	cin >> T;
+	for (int t = 1; t <= T; t++)
+	{
+		cin >> K;
+		for (int i = 1; i <= K; i++)
+		{
+			scanf("%d", &cost[i]);
+			sum[i] = sum[i - 1] + cost[i];
+		}
+		//길이해당
+		for (int L = 2; L <= K; L++)
+		{
+			//시작하는 위치
+			for (int i = 1; i<= K - L + 1; i++)
+			{	
+				int j = i + L - 1;	//끝나는 위치
+				dp[i][j] = 100000000;
+				//중간지점 k(i<=k<j)
+				for (int k = i; k < j; k++)
+				{
+					dp[i][j] = min(dp[i][j], dp[i][k] + dp[k + 1][j] + sum[j] - sum[i - 1]);
+				}
+			}
+		}
+		cout << dp[1][K] << "\n";
+	}
+
+	return 0;
+}
