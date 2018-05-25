@@ -1,0 +1,73 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+int M, N;
+int arr[501][501];
+int dp[501][501];	//-1은 하지않은거 //-1아닌수는 경로 개수
+bool isRange(int x, int y)
+{
+	return (1 <= x && x <= M && 1 <= y && y <= N);
+}
+int DFS(int x, int y)
+{
+	if (x == M && y == N)
+	{
+		return 1;
+	}
+	//이미 경로 파악된 경우
+	if (dp[x][y] != -1)
+	{
+		return dp[x][y];
+	}
+	//현재 개수
+	dp[x][y] = 0;
+	//오른쪽 
+	if (isRange(x, y + 1))
+	{
+		if (arr[x][y] > arr[x][y + 1])
+		{
+			dp[x][y] += DFS(x, y + 1);
+		}
+	}
+	//아래쪽
+	if (isRange(x + 1, y))
+	{
+		if (arr[x][y] > arr[x + 1][y])
+		{
+			dp[x][y] += DFS(x + 1, y);
+		}
+	}
+	//왼쪽 
+	if (isRange(x, y - 1))
+	{
+		if (arr[x][y] > arr[x][y - 1])
+		{
+			dp[x][y] += DFS(x, y - 1);
+		}
+	}
+	//위쪽
+	if (isRange(x - 1, y))
+	{
+		if (arr[x][y] > arr[x - 1][y])
+		{
+			dp[x][y] += DFS(x - 1, y);
+		}
+	}
+	return dp[x][y];
+}
+int main()
+{
+	cin >> M >> N;
+	for (int i = 1; i <= M; i++)
+	{
+		for (int j = 1; j <= N; j++)
+		{
+			scanf("%d" , &arr[i][j]);
+			dp[i][j] = -1;
+		}
+	}
+	cout << DFS(1, 1) << "\n";
+	return 0;
+}
